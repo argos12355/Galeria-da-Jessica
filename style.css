@@ -1,0 +1,639 @@
+/*RESET E VARIÁVEIS*/
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --roxo-escuro:  #4a0072;
+  --roxo-medio:   #7b00bb;
+  --roxo-claro:   #c47ef0;
+  --roxo-fundo:   #1a0028;
+  --roxo-card:    #2d004a;
+  --branco:       #ffffff;
+  --muted:        #d4b8ec;
+  --destaque:     #e040fb;
+  --radius:       10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: var(--roxo-fundo);
+  color: var(--branco);
+  min-height: 100vh;
+}
+
+/*NAVBAR*/
+.cabecalho {
+  background-color: var(--roxo-escuro);
+  border-bottom: 1px solid var(--roxo-medio);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.cabecalho-inner { padding: 10px 20px; gap: 10px; flex-wrap: wrap; }
+
+.logo-texto {
+  color: var(--branco) !important;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.logo-texto:hover { color: var(--roxo-claro) !important; }
+
+.nav-link-custom {
+  color: var(--muted) !important;
+  font-size: 0.9rem;
+  padding: 5px 12px !important;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-link-custom:hover {
+  color: var(--branco) !important;
+  background-color: var(--roxo-medio);
+}
+
+.nav-link-destaque-menu {
+  color: var(--destaque) !important;
+  border: 1px solid var(--destaque);
+  border-radius: 20px;
+  font-weight: 600;
+}
+.nav-link-destaque-menu:hover {
+  background-color: var(--destaque) !important;
+  color: var(--roxo-fundo) !important;
+}
+
+.toggler-custom { border-color: var(--roxo-claro); filter: invert(1); }
+
+.input-pesquisa,
+.select-categoria {
+  background-color: var(--roxo-card);
+  color: var(--branco);
+  border: 1px solid var(--roxo-medio);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  min-width: 150px;
+}
+.input-pesquisa::placeholder { color: var(--muted); }
+.input-pesquisa:focus,
+.select-categoria:focus {
+  background-color: var(--roxo-card);
+  color: var(--branco);
+  border-color: var(--roxo-claro);
+  box-shadow: 0 0 0 2px rgba(196,126,240,0.2);
+  outline: none;
+}
+.select-categoria option { background-color: var(--roxo-escuro); }
+
+/*SEÇÕES*/
+.secao { padding: 48px 0; }
+
+.secao-artista       { background-color: var(--roxo-escuro); border-bottom: 1px solid var(--roxo-medio); }
+.secao-obra-principal { background-color: var(--roxo-fundo); }
+.secao-destaque      { background-color: var(--roxo-escuro); }
+.secao-obras         { background-color: var(--roxo-fundo); }
+.secao-sobre         { background-color: var(--roxo-card); border-top: 1px solid var(--roxo-medio); }
+
+.secao-titulo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.secao-titulo::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--destaque);
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+/*BOTÕES E BADGES */
+.btn-destaque,
+.btn-destaque-especial {
+  display: inline-block;
+  background-color: var(--roxo-medio);
+  color: var(--branco);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-destaque:hover,
+.btn-destaque-especial:hover {
+  background-color: var(--roxo-escuro);
+  color: var(--branco);
+}
+
+.badge-categoria {
+  display: inline-block;
+  background-color: var(--roxo-medio);
+  color: var(--branco);
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.badge-principal {
+  display: inline-block;
+  background: var(--destaque);
+  color: var(--roxo-fundo);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.badge-tag {
+  background-color: var(--roxo-card);
+  border: 1px solid var(--roxo-claro);
+  color: var(--roxo-claro);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.8rem;
+}
+
+/*SEÇÃO ARTISTA*/
+.artista-card {
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+  background: var(--roxo-card);
+  border: 1px solid var(--roxo-medio);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+
+.artista-foto-wrap {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.artista-foto-ring {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 3px solid var(--destaque);
+  overflow: hidden;
+}
+
+.artista-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+
+.artista-foto-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--roxo-escuro);
+  color: var(--branco);
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.artista-badge-principal {
+  background: var(--destaque);
+  color: var(--roxo-fundo);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+}
+
+.artista-info { flex: 1; min-width: 0; }
+
+.artista-nome {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.artista-estilo {
+  color: var(--destaque);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.artista-bio {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+
+.artista-detalhes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.artista-detalhe-item {
+  background: var(--roxo-escuro);
+  border: 1px solid var(--roxo-medio);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.artista-detalhe-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--roxo-claro);
+  font-weight: 600;
+}
+
+.artista-detalhe-valor {
+  font-size: 0.88rem;
+  color: var(--branco);
+}
+
+.artista-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/*SEÇÃO OBRA PRINCIPAL*/
+.obra-principal-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.obra-principal-label {
+  display: inline-block;
+  border: 1px solid var(--destaque);
+  color: var(--destaque);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 14px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+
+.obra-principal-subtitulo {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.obra-principal-grid {
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+}
+
+.obra-principal-imagem-wrap { flex: 0 0 300px; max-width: 100%; }
+
+.obra-principal-moldura {
+  border-radius: var(--radius);
+  border: 2px solid var(--destaque);
+  overflow: hidden;
+}
+
+.obra-principal-img { width: 100%; display: block; }
+
+.obra-principal-info { flex: 1; min-width: 0; }
+
+.obra-principal-titulo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.obra-principal-desc {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* Etapas */
+.obra-principal-processo {
+  background: var(--roxo-card);
+  border: 1px solid var(--roxo-medio);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.processo-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--roxo-claro);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.processo-steps { display: flex; align-items: center; }
+
+.processo-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+
+.processo-step span { font-size: 0.72rem; color: var(--muted); }
+.processo-step.ativo .processo-step-num { background: var(--destaque); color: var(--roxo-fundo); border-color: var(--destaque); }
+.processo-step.ativo span { color: var(--destaque); font-weight: 600; }
+
+.processo-step-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--roxo-escuro);
+  border: 1px solid var(--roxo-medio);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.processo-step-linha {
+  flex: 1;
+  height: 1px;
+  background: var(--roxo-medio);
+  margin-bottom: 20px;
+  min-width: 16px;
+}
+
+/*CARROSSEL*/
+.rounded-carousel {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--roxo-medio);
+}
+
+.carousel-img {
+  height: 380px;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+
+.carousel-caption {
+  background: rgba(74,0,114,0.7);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  bottom: 16px;
+}
+
+.carousel-caption h5 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+.carousel-caption p  { font-size: 0.85rem; color: var(--muted); }
+.carousel-indicators [data-bs-target] { background-color: var(--roxo-claro); }
+
+/*CARDS DE OBRAS*/
+.obra-card {
+  background-color: var(--roxo-card);
+  border: 1px solid var(--roxo-medio);
+  border-radius: var(--radius);
+  color: var(--branco);
+  overflow: hidden;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.obra-card:hover { border-color: var(--roxo-claro); transform: translateY(-3px); }
+.obra-card-principal { border-color: var(--destaque) !important; }
+
+.obra-card-img { height: 210px; object-fit: cover; width: 100%; }
+.obra-card .card-title { font-size: 0.95rem; font-weight: 700; color: var(--branco); margin-bottom: 6px; }
+.obra-card .card-text  { font-size: 0.85rem; color: var(--muted); margin-bottom: 5px; }
+
+.texto-sem-resultado { color: var(--muted); font-size: 0.95rem; padding: 32px 0; }
+
+/*SEÇÃO SOBRE*/
+.sobre-card {
+  background-color: var(--roxo-escuro);
+  border: 1px solid var(--roxo-medio);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.sobre-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: var(--roxo-medio);
+  color: var(--branco);
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  border: 2px solid var(--roxo-claro);
+}
+
+.sobre-nome  { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
+.sobre-texto { color: var(--muted); font-size: 0.9rem; line-height: 1.65; margin-bottom: 8px; }
+.sobre-tags  { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+
+/*RODAPÉ*/
+.rodape {
+  background-color: var(--roxo-escuro);
+  border-top: 1px solid var(--roxo-medio);
+  padding: 20px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.rodape strong { color: var(--branco); }
+.rodape-sub   { font-size: 0.78rem; margin-top: 3px; color: #9966bb; }
+
+/*DETALHES DA OBR*/
+.secao-detalhe {
+  background-color: var(--roxo-card);
+  border: 1px solid var(--roxo-medio);
+  border-radius: var(--radius);
+  padding: 54px;
+  margin-bottom: 54px;
+}
+
+.secao-titulo-detalhe {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--roxo-medio);
+}
+
+.detalhe-grid {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.detalhe-imagem-wrap  { flex: 0 0 280px; max-width: 100%; }
+.detalhe-info         { flex: 1; min-width: 220px; }
+
+.detalhe-imagem-principal {
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--roxo-claro);
+  object-fit: cover;
+}
+
+.detalhe-imagem-principal-glow { border-color: var(--destaque) !important; }
+
+.detalhe-titulo { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
+
+.detalhe-lista { margin-top: 14px; }
+.detalhe-lista dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--roxo-claro);
+  font-weight: 600;
+  margin-top: 12px;
+}
+.detalhe-lista dd {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-left: 0;
+  line-height: 1.55;
+}
+
+.foto-card {
+  background-color: var(--roxo-escuro);
+  border: 1px solid var(--roxo-medio);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.foto-card:hover { border-color: var(--roxo-claro); }
+.foto-card-img   { width: 100%; height: 380px; object-fit: cover; display: block; }
+.foto-titulo     { padding: 8px 12px; font-size: 0.85rem; color: var(--muted); text-align: center; }
+
+.breadcrumb-custom { background: transparent; padding: 0; }
+.breadcrumb-custom .breadcrumb-item a              { color: var(--roxo-claro); text-decoration: none; }
+.breadcrumb-custom .breadcrumb-item a:hover        { color: var(--branco); }
+.breadcrumb-custom .breadcrumb-item.active         { color: var(--muted); }
+.breadcrumb-custom .breadcrumb-item + .breadcrumb-item::before { color: var(--muted); }
+
+.loading-texto { color: var(--muted); }
+.alert-erro    { color: var(--muted); }
+
+/*SEÇÃO Desenvolvedor*/
+.Desenvolvedor-card {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  background: var(--roxo-card);
+  border: 1px solid var(--roxo-medio);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.Desenvolvedor-foto-wrap {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.Desenvolvedor-foto-ring {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 3px solid var(--branco);
+  overflow: hidden;
+}
+
+.Desenvolvedor-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+
+.Desenvolvedor-foto-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--roxo-escuro);
+  color: var(--branco);
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.Desenvolvedor-badge-principal {
+  background: var(--branco);
+  color: var(--roxo-fundo);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+}
+
+/*RESPONSIVIDADE*/
+@media (max-width: 991px) {
+  .artista-card { gap: 24px; padding: 24px; }
+  .artista-foto-ring { width: 150px; height: 150px; }
+  .obra-principal-grid { gap: 24px; }
+  .obra-principal-imagem-wrap { flex: 0 0 240px; }
+  .carousel-img { height: 300px; }
+}
+
+@media (max-width: 767px) {
+  .artista-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 16px;
+    gap: 20px;
+  }
+  .artista-detalhes-grid { grid-template-columns: 1fr; }
+  .artista-tags { justify-content: center; }
+
+  .obra-principal-grid { flex-direction: column; gap: 20px; }
+  .obra-principal-imagem-wrap { flex: unset; width: 100%; max-width: 300px; margin: 0 auto; }
+
+  .search-form  { width: 100%; margin-top: 8px; }
+  .input-pesquisa, .select-categoria { width: 100%; min-width: unset; }
+
+  .secao { padding: 32px 0; }
+  .carousel-img { height: 220px; }
+
+  .sobre-card { padding: 20px; text-align: center; }
+  .sobre-tags { justify-content: center; }
+
+  .detalhe-grid { flex-direction: column; }
+  .detalhe-imagem-wrap { flex: unset; width: 100%; }
+  .secao-detalhe { padding: 16px; }
+}
+
+@media (max-width: 480px) {
+  .carousel-img  { height: 180px; }
+  .obra-card-img { height: 180px; }
+  .foto-card-img { height: 160px; }
+  .secao-titulo  { font-size: 1.25rem; }
+}

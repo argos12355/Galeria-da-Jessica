@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galeria da Jessica</title>
+
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <!-- Estilos próprios -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== CABEÇALHO ===== -->
+  <header class="cabecalho">
+    <nav class="navbar navbar-expand-md">
+      <div class="container-fluid cabecalho-inner">
+
+        <!-- Logo / nome -->
+        <a class="navbar-brand logo-texto" href="index.html">🎨 Galeria da Jessica</a>
+
+        <!-- Botão mobile -->
+        <button class="navbar-toggler toggler-custom" type="button"
+          data-bs-toggle="collapse" data-bs-target="#menuNav"
+          aria-controls="menuNav" aria-expanded="false" aria-label="Abrir menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menu de navegação -->
+        <div class="collapse navbar-collapse" id="menuNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-md-0 gap-md-1">
+            <li class="nav-item"><a class="nav-link nav-link-custom" href="#artista">Artista</a></li>
+            <li class="nav-item"><a class="nav-link nav-link-custom nav-link-destaque-menu" href="#obra-principal">Obra Principal</a></li>
+            <li class="nav-item"><a class="nav-link nav-link-custom" href="#destaque">Destaques</a></li>
+            <li class="nav-item"><a class="nav-link nav-link-custom" href="#obras">Obras</a></li>
+            <li class="nav-item"><a class="nav-link nav-link-custom" href="#sobre">Sobre</a></li>
+          </ul>
+
+          <!-- Formulário de pesquisa -->
+          <form class="search-form d-flex flex-wrap gap-2 ms-md-3" id="form-pesquisa">
+            <input id="campo-pesquisa" class="form-control input-pesquisa" type="text"
+              placeholder="Pesquisar obra..." aria-label="Pesquisar obra" />
+            <select id="filtro-categoria" class="form-select select-categoria" aria-label="Filtrar por categoria">
+              <option value="todas">Todas as categorias</option>
+              <option value="Ilustração">Ilustração</option>
+              <option value="Personagem">Personagem</option>
+              <option value="Arte Digital">Arte Digital</option>
+            </select>
+          </form>
+        </div>
+
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <!--SEÇÃO ARTISTA — PERFIL DA JESSICA-->
+    <section id="artista" class="secao secao-artista">
+      <div class="container">
+        <div class="artista-card">
+
+          <!-- Foto de perfil -->
+          <div class="artista-foto-wrap">
+            <div class="artista-foto-ring">
+              <img src="imagem/ProfileJessica.png" alt="Foto de perfil da artista Jessica"
+                class="artista-foto" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="artista-foto-placeholder" style="display:none;">JE</div>
+            </div>
+            <div class="artista-badge-principal">✦ Artista Principal</div>
+          </div>
+
+          <!-- Informações da artista -->
+          <div class="artista-info">
+            <h2 class="artista-nome">Jessica</h2>
+            <p class="artista-estilo">Ilustradora Digital · Criadora de Personagens</p>
+
+            <p class="artista-bio">
+              Jessica é uma artista digital especializada em ilustrações de personagens com cores
+              vivas e traços expressivos. Seu trabalho mistura influências do estilo anime com
+              técnicas de pintura digital moderna, criando composições únicas cheias de personalidade.
+            </p>
+
+            <div class="artista-detalhes-grid">
+              <div class="artista-detalhe-item">
+                <span class="artista-detalhe-label">Estilo</span>
+                <span class="artista-detalhe-valor">Arte Digital / Anime</span>
+              </div>
+              <div class="artista-detalhe-item">
+                <span class="artista-detalhe-label">Ferramentas</span>
+                <span class="artista-detalhe-valor">Clip Studio Paint, Medibang</span>
+              </div>
+              <div class="artista-detalhe-item">
+                <span class="artista-detalhe-label">Especialidade</span>
+                <span class="artista-detalhe-valor">Personagens e Ilustrações</span>
+              </div>
+              <div class="artista-detalhe-item">
+                <span class="artista-detalhe-label">Desde</span>
+                <span class="artista-detalhe-valor">2024</span>
+              </div>
+            </div>
+
+            <div class="artista-tags">
+              <span class="badge-tag">Ilustração</span>
+              <span class="badge-tag">Personagem</span>
+              <span class="badge-tag">Arte Digital</span>
+              <span class="badge-tag">Anime</span>
+            </div>
+
+            <a href="#obra-principal" class="btn btn-destaque mt-3">Ver obra principal ↓</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!--SEÇÃO OBRA PRINCIPAL-->
+    <section id="obra-principal" class="secao secao-obra-principal">
+      <div class="container">
+
+        <!-- Cabeçalho da aba -->
+        <div class="obra-principal-header">
+          <div class="obra-principal-label">✦ Obra em Destaque</div>
+          <h2 class="secao-titulo">Obra Principal</h2>
+          <p class="obra-principal-subtitulo">A obra que define a identidade artística da Jessica</p>
+        </div>
+
+        <!-- Conteúdo: imagem grande + detalhes -->
+        <div class="obra-principal-grid">
+
+          <!-- Imagem com moldura especial -->
+          <div class="obra-principal-imagem-wrap">
+            <div class="obra-principal-moldura">
+              <img src="imagem/madoka2.png" alt="Madoka — Obra Principal da Jessica"
+                class="obra-principal-img" />
+              <div class="obra-principal-brilho"></div>
+            </div>
+            <a href="detalhes.html?id=0" class="btn btn-destaque-especial mt-3 d-block text-center">
+              Ver detalhes completos
+            </a>
+          </div>
+
+          <!-- Informações da obra -->
+          <div class="obra-principal-info">
+            <h3 class="obra-principal-titulo">Madoka</h3>
+            <span class="badge-categoria mb-3 d-inline-block">Arte Digital Especial</span>
+
+            <p class="obra-principal-desc">
+              Esta é a obra mais especial da galeria — uma ilustração de Madoka que representa
+              a evolução do estilo artístico da Jessica. Com traços delicados, paleta de cores
+              vibrante e atenção minuciosa aos detalhes, essa arte captura a essência do trabalho
+              da artista.
+            </p>
+
+            <dl class="detalhe-lista mt-3">
+              <dt>Técnica</dt>
+              <dd>Pintura Digital com camadas</dd>
+
+              <dt>Personagem</dt>
+              <dd>Madoka — arte original fan-art</dd>
+
+              <dt>Resolução</dt>
+              <dd>Alta resolução — 4K</dd>
+
+              <dt>Status</dt>
+              <dd>Obra finalizada</dd>
+
+              <dt>Criado por</dt>
+              <dd>Jessica · 2026</dd>
+            </dl>
+
+            <!-- Mini galeria de processo -->
+            <div class="obra-principal-processo mt-4">
+              <p class="processo-label">Etapas da criação</p>
+              <div class="processo-steps">
+                <div class="processo-step">
+                  <div class="processo-step-num">1</div>
+                  <span>Esboço</span>
+                </div>
+                <div class="processo-step-linha"></div>
+                <div class="processo-step">
+                  <div class="processo-step-num">2</div>
+                  <span>Linha-arte</span>
+                </div>
+                <div class="processo-step-linha"></div>
+                <div class="processo-step">
+                  <div class="processo-step-num">3</div>
+                  <span>Colorização</span>
+                </div>
+                <div class="processo-step-linha"></div>
+                <div class="processo-step ativo">
+                  <div class="processo-step-num">4</div>
+                  <span>Final</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!--  SEÇÃO 1 — SLIDER DE DESTAQUES  -->
+    <section id="destaque" class="secao secao-destaque">
+      <div class="container">
+        <h2 class="secao-titulo">Vitrine</h2>
+
+        <div id="carrossel-destaques" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-indicators" id="carrossel-indicators"></div>
+          <div class="carousel-inner rounded-carousel" id="carrossel-inner"></div>
+
+          <button class="carousel-control-prev" type="button"
+            data-bs-target="#carrossel-destaques" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button"
+            data-bs-target="#carrossel-destaques" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 2 — CARDS DAS OBRAS  -->
+    <section id="obras" class="secao secao-obras">
+      <div class="container">
+        <h2 class="secao-titulo">Todas as Obras</h2>
+        <div id="lista-obras" class="row"></div>
+      </div>
+    </section>
+
+    <!--  SEÇÃO 3 — SOBRE O DESENVOLVEDOR  -->
+    <section id="sobre" class="secao secao-sobre">
+      <div class="container">
+        <h2 class="secao-titulo">Sobre o Desenvolvedor</h2>
+
+        <div class="Desenvolvedor-foto-wrap">
+            <div class="Desenvolvedor-foto-ring">
+              <img src="imagem/ProfileJoao.jpeg" alt="Foto de perfil do Desenvolvedor"
+                class="Desenvolvedor-foto" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+              <div class="Desenvolvedor-foto-placeholder" style="display:none;">JE</div>
+            </div>
+            <div class="Desenvolvedor-badge-principal">✦ Developer</div>
+          </div>
+            <h3 class="sobre-nome">João Vitor Alves Araujo</h3>
+            <p class="sobre-texto">
+              Desenvolvedor responsável pela criação desta galeria digital como projeto da disciplina de
+              Desenvolvimento Web. A galeria foi criada para exibir e divulgar as obras da artista Jessica,
+              com foco em ilustrações digitais, personagens e arte criativa.
+            </p>
+            <p class="sobre-texto">
+              O projeto utiliza JavaScript puro para montagem dinâmica do conteúdo, Bootstrap 5 para
+              responsividade e estrutura de dados em JSON.
+            </p>
+            <div class="sobre-tags">
+              <span class="badge-tag">HTML5</span>
+              <span class="badge-tag">CSS3</span>
+              <span class="badge-tag">JavaScript</span>
+              <span class="badge-tag">Bootstrap 5</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!--  RODAPÉ -->
+  <footer class="rodape">
+    <div class="container">
+      <p>🎨 Galeria da Jessica &nbsp;|&nbsp; Desenvolvido por <strong>João Vitor Alves Araujo</strong></p>
+      <p class="rodape-sub">Projeto de Desenvolvimento Web · 2026</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,5 +1,10 @@
-// ESTRUTURA DE DADOS - Galeria da Jessica
-const dados = {
+const STORAGE_KEYS = {
+  itens: "galeria-itens",
+  usuarios: "galeria-usuarios",
+  usuarioLogado: "galeria-usuario-logado"
+};
+
+const dadosBase = {
   artista: {
     nome: "Jessica",
     foto: "imagem/ProfileJessica.png",
@@ -9,7 +14,6 @@ const dados = {
     especialidade: "Personagens e Ilustrações",
     desde: "2024"
   },
-
   obras: [
     {
       id: 0,
@@ -90,14 +94,187 @@ const dados = {
   ]
 };
 
-// CARROSSEL — slider de destaques (index.html)
+function inicializarStorage() {
+  const itensSalvos = localStorage.getItem(STORAGE_KEYS.itens);
+  if (!itensSalvos) {
+    localStorage.setItem(STORAGE_KEYS.itens, JSON.stringify(dadosBase.obras));
+  }
+
+  const usuariosSalvos = localStorage.getItem(STORAGE_KEYS.usuarios);
+  if (!usuariosSalvos) {
+    const usuariosIniciais = [
+      {
+        id: "admin-1",
+        login: "admin",
+        senha: "123",
+        nome: "Administrador do Sistema",
+        email: "admin@abc.com",
+        admin: true,
+        favoritos: []
+      },
+      {
+        id: "user-1",
+        login: "user",
+        senha: "123",
+        nome: "Usuário Comum",
+        email: "user@abc.com",
+        admin: false,
+        favoritos: []
+      }
+    ];
+    localStorage.setItem(STORAGE_KEYS.usuarios, JSON.stringify(usuariosIniciais));
+  }
+}
+
+function obterItens() {
+  try {
+    const itens = JSON.parse(localStorage.getItem(STORAGE_KEYS.itens) || "[]");
+    return Array.isArray(itens) ? itens : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function salvarItens(itens) {
+  localStorage.setItem(STORAGE_KEYS.itens, JSON.stringify(itens));
+}
+
+function obterUsuarios() {
+  try {
+    const usuarios = JSON.parse(localStorage.getItem(STORAGE_KEYS.usuarios) || "[]");
+    return Array.isArray(usuarios) ? usuarios : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function salvarUsuarios(usuarios) {
+  localStorage.setItem(STORAGE_KEYS.usuarios, JSON.stringify(usuarios));
+}
+
+function obterUsuarioLogado() {
+  try {
+    const valor = sessionStorage.getItem(STORAGE_KEYS.usuarioLogado);
+    return valor ? JSON.parse(valor) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function definirUsuarioLogado(usuario) {
+  sessionStorage.setItem(STORAGE_KEYS.usuarioLogado, JSON.stringify(usuario));
+}
+
+function limparUsuarioLogado() {
+  sessionStorage.removeItem(STORAGE_KEYS.usuarioLogado);
+}
+
+function getFavoritosDoUsuario(usuario) {
+  if (!usuario) return [];
+  return Array.isArray(usuario.favoritos) ? usuario.favoritos : [];
+}
+
+function usuarioEhFavorito(itemId) {
+  const usuario = obterUsuarioLogado();
+  return getFavoritosDoUsuario(usuario).includes(itemId);
+}
+
+function alternarFavorito(itemId) {
+  const usuario = obterUsuarioLogado();
+  if (!usuario) {
+    window.location.href = "login.html";
+    return false;
+  }
+
+  const usuarios = obterUsuarios();
+  const indice = usuarios.findIndex(function(item) {
+    return item.id === usuario.id;
+  });
+
+  if (indice === -1) {
+    return false;
+  }
+
+  const favoritosAtuais = getFavoritosDoUsuario(usuarios[indice]);
+  const jaEstaNosFavoritos = favoritosAtuais.includes(itemId);
+  const novosFavoritos = jaEstaNosFavoritos
+    ? favoritosAtuais.filter(function(id) {
+        return id !== itemId;
+      })
+    : favoritosAtuais.concat(itemId);
+
+  usuarios[indice] = Object.assign({}, usuarios[indice], { favoritos: novosFavoritos });
+  salvarUsuarios(usuarios);
+  definirUsuarioLogado(usuarios[indice]);
+  return !jaEstaNosFavoritos;
+}
+
+function removerFavorito(itemId) {
+  const usuario = obterUsuarioLogado();
+  if (!usuario) return;
+
+  const usuarios = obterUsuarios();
+  const indice = usuarios.findIndex(function(item) {
+    return item.id === usuario.id;
+  });
+
+  if (indice === -1) return;
+
+  const novosFavoritos = getFavoritosDoUsuario(usuarios[indice]).filter(function(id) {
+    return id !== itemId;
+  });
+
+  usuarios[indice] = Object.assign({}, usuarios[indice], { favoritos: novosFavoritos });
+  salvarUsuarios(usuarios);
+  definirUsuarioLogado(usuarios[indice]);
+}
+
+function renderizarMenu() {
+  const containers = document.querySelectorAll("#menu-principal");
+  const usuario = obterUsuarioLogado();
+
+  containers.forEach(function(container) {
+    const itens = [
+      { label: "Página Inicial", href: "index.html" },
+      { label: "Obras", href: "index.html#obras" },
+      { label: "Sobre", href: "index.html#sobre" }
+    ];
+
+    if (usuario) {
+      itens.splice(1, 0, { label: "Favoritos", href: "favoritos.html" });
+      if (usuario.admin) {
+        itens.splice(2, 0, { label: "Cadastrar Itens", href: "cadastro-itens.html" });
+      }
+      itens.push({ label: "Sair", href: "index.html", action: "logout" });
+    } else {
+      itens.push({ label: "Login", href: "login.html" });
+      itens.push({ label: "Cadastro", href: "cadastro.html" });
+    }
+
+    container.innerHTML = itens.map(function(item) {
+      const attrs = `href="${item.href}" class="nav-link nav-link-custom"`;
+      return `
+        <li class="nav-item">
+          <a ${attrs}${item.action ? ' data-action="logout"' : ''}>${item.label}</a>
+        </li>`;
+    }).join("");
+  });
+
+  document.querySelectorAll("[data-action='logout']").forEach(function(link) {
+    link.addEventListener("click", function(evento) {
+      evento.preventDefault();
+      limparUsuarioLogado();
+      window.location.href = "index.html";
+    });
+  });
+}
+
 function montarCarrossel() {
   const inner = document.getElementById("carrossel-inner");
   const indicators = document.getElementById("carrossel-indicators");
   if (!inner) return;
 
-  // Exclui a obra principal do carrossel (ela já tem seção própria)
-  const destaques = dados.obras.filter(function(obra) {
+  const destaques = obterItens().filter(function(obra) {
     return obra.destaque === true && obra.principal !== true;
   });
 
@@ -111,7 +288,6 @@ function montarCarrossel() {
 
   for (let i = 0; i < destaques.length; i++) {
     const ativo = i === 0 ? "active" : "";
-
     htmlIndicators += `
       <button type="button" data-bs-target="#carrossel-destaques" data-bs-slide-to="${i}"
         class="${ativo}" aria-label="Slide ${i + 1}" ${ativo ? 'aria-current="true"' : ""}></button>
@@ -133,18 +309,15 @@ function montarCarrossel() {
   inner.innerHTML = htmlSlides;
 }
 
-// CARDS — lista de todas as obras (index.html)
 function pegarObrasFiltradas() {
   const campoPesquisa = document.getElementById("campo-pesquisa");
   const filtroCategoria = document.getElementById("filtro-categoria");
+  const texto = campoPesquisa ? campoPesquisa.value.toLowerCase() : "";
+  const categoria = filtroCategoria ? filtroCategoria.value : "todas";
 
-  let texto = campoPesquisa ? campoPesquisa.value.toLowerCase() : "";
-  let categoria = filtroCategoria ? filtroCategoria.value : "todas";
-
-  // Inclui todas as obras (inclusive madoka, id=0) na listagem geral
-  return dados.obras.filter(function(obra) {
+  return obterItens().filter(function(obra) {
     const tituloCombina = obra.titulo.toLowerCase().includes(texto) ||
-                          obra.descricao.toLowerCase().includes(texto);
+      obra.descricao.toLowerCase().includes(texto);
     const categoriaCombina = categoria === "todas" || obra.categoria === categoria;
     return tituloCombina && categoriaCombina;
   });
@@ -165,16 +338,22 @@ function montarCards() {
   }
 
   let html = "";
+  const usuarioLogado = obterUsuarioLogado();
 
   for (let i = 0; i < obrasFiltradas.length; i++) {
     const obra = obrasFiltradas[i];
-    const badgePrincipal = obra.principal
-      ? '<span class="badge-principal">✦ Principal</span>'
-      : '';
+    const badgePrincipal = obra.principal ? '<span class="badge-principal">✦ Principal</span>' : "";
+    const ehFavorito = usuarioLogado ? usuarioEhFavorito(obra.id) : false;
+    const iconeFavorito = ehFavorito ? "♥" : "♡";
+    const classeFavorito = ehFavorito ? "ativo" : "";
+    const acaoFavorito = usuarioLogado ? "" : " data-redirect='login.html'";
 
     html += `
       <div class="col-12 col-sm-6 col-lg-4 mb-4">
         <div class="card obra-card h-100 ${obra.principal ? 'obra-card-principal' : ''}">
+          <button type="button" class="btn-favorito ${classeFavorito}${usuarioLogado ? '' : ' desativado'}"${acaoFavorito} data-id="${obra.id}" aria-label="Adicionar aos favoritos">
+            ${iconeFavorito}
+          </button>
           <a href="detalhes.html?id=${obra.id}">
             <img src="${obra.imagem}" class="card-img-top obra-card-img" alt="${obra.titulo}" />
           </a>
@@ -194,8 +373,6 @@ function montarCards() {
 
   lista.innerHTML = html;
 }
-
-// EVENTOS — pesquisa e filtro (index.html)
 
 function configurarEventos() {
   const formulario = document.querySelector(".search-form");
@@ -220,9 +397,24 @@ function configurarEventos() {
       montarCards();
     });
   }
-}
 
-// PÁGINA DE DETALHES (detalhes.html)
+  const lista = document.getElementById("lista-obras");
+  if (lista) {
+    lista.addEventListener("click", function(evento) {
+      const botao = evento.target.closest(".btn-favorito");
+      if (botao) {
+        evento.preventDefault();
+        const id = Number(botao.getAttribute("data-id"));
+        if (botao.getAttribute("data-redirect")) {
+          window.location.href = botao.getAttribute("data-redirect");
+          return;
+        }
+        alternarFavorito(id);
+        montarCards();
+      }
+    });
+  }
+}
 
 function montarDetalhes() {
   const areaDetalhe = document.getElementById("detalhe-obra");
@@ -231,8 +423,7 @@ function montarDetalhes() {
 
   const parametros = new URLSearchParams(window.location.search);
   const id = Number(parametros.get("id"));
-
-  const obra = dados.obras.find(function(item) {
+  const obra = obterItens().find(function(item) {
     return item.id === id;
   });
 
@@ -247,38 +438,39 @@ function montarDetalhes() {
   }
 
   document.title = obra.titulo + " — Galeria da Jessica";
+  const badgePrincipal = obra.principal ? '<span class="badge-principal ms-2">✦ Obra Principal</span>' : "";
+  const usuarioLogado = obterUsuarioLogado();
+  const ehFavorito = usuarioLogado ? usuarioEhFavorito(obra.id) : false;
+  const iconeFavorito = ehFavorito ? "♥" : "♡";
+  const classeFavorito = ehFavorito ? "ativo" : "";
 
-  const badgePrincipal = obra.principal
-    ? '<span class="badge-principal ms-2">✦ Obra Principal</span>'
-    : '';
-
-  // (1) Informações gerais — 6 campos
   areaDetalhe.innerHTML = `
     <div class="detalhe-grid">
       <div class="detalhe-imagem-wrap">
-        <img src="${obra.imagem}" alt="${obra.titulo}"
-          class="detalhe-imagem-principal ${obra.principal ? 'detalhe-imagem-principal-glow' : ''}" />
+        <img src="${obra.imagem}" alt="${obra.titulo}" class="detalhe-imagem-principal ${obra.principal ? 'detalhe-imagem-principal-glow' : ''}" />
       </div>
       <div class="detalhe-info">
         <h2 class="detalhe-titulo">${obra.titulo}${badgePrincipal}</h2>
         <span class="badge-categoria mb-3 d-inline-block">${obra.categoria}</span>
 
+        <div class="mb-3">
+          <button type="button" class="btn-favorito ${classeFavorito}${usuarioLogado ? '' : ' desativado'}" data-id="${obra.id}" id="botao-favorito-detalhes" aria-label="Favoritar obra">
+            ${iconeFavorito}
+          </button>
+          <span class="ms-2">${usuarioLogado ? (ehFavorito ? "Favorito" : "Adicionar aos favoritos") : "Faça login para favoritar"}</span>
+        </div>
+
         <dl class="detalhe-lista">
           <dt>Descrição</dt>
           <dd>${obra.descricao}</dd>
-
           <dt>Conteúdo</dt>
           <dd>${obra.conteudo}</dd>
-
           <dt>Artista</dt>
           <dd>${obra.autor}</dd>
-
           <dt>Técnica</dt>
           <dd>${obra.tecnica}</dd>
-
           <dt>Dimensões</dt>
           <dd>${obra.dimensoes}</dd>
-
           <dt>Data de criação</dt>
           <dd>${formatarData(obra.data)}</dd>
         </dl>
@@ -288,7 +480,24 @@ function montarDetalhes() {
     </div>
   `;
 
-  // (2) Fotos vinculadas
+  const botaoFavoritoDetalhes = document.getElementById("botao-favorito-detalhes");
+  if (botaoFavoritoDetalhes) {
+    botaoFavoritoDetalhes.addEventListener("click", function() {
+      if (!obterUsuarioLogado()) {
+        window.location.href = "login.html";
+        return;
+      }
+      const agoraEhFavorito = alternarFavorito(obra.id);
+      if (agoraEhFavorito) {
+        botaoFavoritoDetalhes.classList.add("ativo");
+        botaoFavoritoDetalhes.innerHTML = "♥";
+      } else {
+        botaoFavoritoDetalhes.classList.remove("ativo");
+        botaoFavoritoDetalhes.innerHTML = "♡";
+      }
+    });
+  }
+
   if (areaFotos && obra.fotos && obra.fotos.length > 0) {
     let htmlFotos = "";
     for (let i = 0; i < obra.fotos.length; i++) {
@@ -306,7 +515,221 @@ function montarDetalhes() {
   }
 }
 
-// UTILITÁRIOS
+function montarFavoritos() {
+  const lista = document.getElementById("lista-favoritos");
+  if (!lista) return;
+
+  const usuario = obterUsuarioLogado();
+  if (!usuario) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const favoritos = getFavoritosDoUsuario(usuario);
+  const obrasFavoritas = obterItens().filter(function(obra) {
+    return favoritos.includes(obra.id);
+  });
+
+  if (obrasFavoritas.length === 0) {
+    lista.innerHTML = `
+      <div class="col-12">
+        <div class="empty-state">
+          <p>Você ainda não possui itens favoritos cadastrados.</p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  lista.innerHTML = obrasFavoritas.map(function(obra) {
+    return `
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="card obra-card h-100">
+          <a href="detalhes.html?id=${obra.id}">
+            <img src="${obra.imagem}" class="card-img-top obra-card-img" alt="${obra.titulo}" />
+          </a>
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">${obra.titulo}</h5>
+            <p class="card-text flex-grow-1">${obra.descricao}</p>
+            <div class="d-flex gap-2">
+              <a href="detalhes.html?id=${obra.id}" class="btn btn-destaque">Ver detalhes</a>
+              <button type="button" class="btn btn-outline-light btn-sm" data-remover-id="${obra.id}">Remover</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+
+  lista.querySelectorAll("[data-remover-id]").forEach(function(botao) {
+    botao.addEventListener("click", function() {
+      removerFavorito(Number(botao.getAttribute("data-remover-id")));
+      montarFavoritos();
+    });
+  });
+}
+
+function configurarCadastro() {
+  const form = document.getElementById("form-cadastro");
+  if (!form) return;
+
+  form.addEventListener("submit", function(evento) {
+    evento.preventDefault();
+    const usuarios = obterUsuarios();
+    const nome = document.getElementById("nome").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const login = document.getElementById("login-cadastro").value.trim();
+    const senha = document.getElementById("senha-cadastro").value;
+
+    const jaExiste = usuarios.some(function(usuario) {
+      return usuario.login.toLowerCase() === login.toLowerCase();
+    });
+
+    if (jaExiste) {
+      alert("Este usuário já existe.");
+      return;
+    }
+
+    const novoUsuario = {
+      id: Date.now().toString(),
+      login: login,
+      senha: senha,
+      nome: nome,
+      email: email,
+      admin: false,
+      favoritos: []
+    };
+
+    usuarios.push(novoUsuario);
+    salvarUsuarios(usuarios);
+    definirUsuarioLogado(novoUsuario);
+    window.location.href = "index.html";
+  });
+}
+
+function configurarLogin() {
+  const form = document.getElementById("form-login");
+  if (!form) return;
+
+  form.addEventListener("submit", function(evento) {
+    evento.preventDefault();
+    const login = document.getElementById("login").value.trim();
+    const senha = document.getElementById("senha").value;
+
+    const usuarios = obterUsuarios();
+    const usuarioEncontrado = usuarios.find(function(usuario) {
+      return usuario.login === login && usuario.senha === senha;
+    });
+
+    if (!usuarioEncontrado) {
+      alert("Login ou senha inválidos.");
+      return;
+    }
+
+    definirUsuarioLogado(usuarioEncontrado);
+    window.location.href = "index.html";
+  });
+}
+
+function configurarCrud() {
+  const form = document.getElementById("form-item");
+  const tabela = document.getElementById("lista-itens");
+  if (!form || !tabela) return;
+
+  const usuario = obterUsuarioLogado();
+  if (!usuario || !usuario.admin) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  function renderizarTabela() {
+    const itens = obterItens();
+    tabela.innerHTML = itens.map(function(item) {
+      return `
+        <tr>
+          <td>${item.titulo}</td>
+          <td>${item.categoria}</td>
+          <td>${item.destaque ? "Sim" : "Não"}</td>
+          <td>
+            <button type="button" class="btn btn-sm btn-outline-light me-2" data-editar-id="${item.id}">Editar</button>
+            <button type="button" class="btn btn-sm btn-outline-danger" data-excluir-id="${item.id}">Excluir</button>
+          </td>
+        </tr>`;
+    }).join("");
+  }
+
+  form.addEventListener("submit", function(evento) {
+    evento.preventDefault();
+    const itens = obterItens();
+    const idCampo = document.getElementById("item-id").value;
+    const novoItem = {
+      id: idCampo ? Number(idCampo) : Date.now(),
+      titulo: document.getElementById("titulo").value.trim(),
+      descricao: document.getElementById("descricao").value.trim(),
+      conteudo: document.getElementById("conteudo").value.trim(),
+      categoria: document.getElementById("categoria").value.trim(),
+      imagem: document.getElementById("imagem").value.trim(),
+      tecnica: document.getElementById("tecnica").value.trim(),
+      dimensoes: document.getElementById("dimensoes").value.trim(),
+      data: document.getElementById("data").value || new Date().toISOString().slice(0, 10),
+      destaque: document.getElementById("destaque").checked,
+      principal: document.getElementById("principal").checked,
+      autor: "Jessica",
+      fotos: []
+    };
+
+    if (idCampo) {
+      const indice = itens.findIndex(function(item) {
+        return item.id === Number(idCampo);
+      });
+      if (indice !== -1) {
+        itens[indice] = Object.assign({}, itens[indice], novoItem);
+      }
+    } else {
+      itens.push(novoItem);
+    }
+
+    salvarItens(itens);
+    form.reset();
+    document.getElementById("item-id").value = "";
+    renderizarTabela();
+  });
+
+  tabela.addEventListener("click", function(evento) {
+    const botaoEditar = evento.target.closest("[data-editar-id]");
+    const botaoExcluir = evento.target.closest("[data-excluir-id]");
+
+    if (botaoEditar) {
+      const id = Number(botaoEditar.getAttribute("data-editar-id"));
+      const item = obterItens().find(function(obra) {
+        return obra.id === id;
+      });
+      if (item) {
+        document.getElementById("item-id").value = item.id;
+        document.getElementById("titulo").value = item.titulo;
+        document.getElementById("descricao").value = item.descricao;
+        document.getElementById("conteudo").value = item.conteudo;
+        document.getElementById("categoria").value = item.categoria;
+        document.getElementById("imagem").value = item.imagem;
+        document.getElementById("tecnica").value = item.tecnica;
+        document.getElementById("dimensoes").value = item.dimensoes;
+        document.getElementById("data").value = item.data;
+        document.getElementById("destaque").checked = Boolean(item.destaque);
+        document.getElementById("principal").checked = Boolean(item.principal);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    if (botaoExcluir) {
+      const id = Number(botaoExcluir.getAttribute("data-excluir-id"));
+      const itensAtualizados = obterItens().filter(function(item) {
+        return item.id !== id;
+      });
+      salvarItens(itensAtualizados);
+      renderizarTabela();
+    }
+  });
+
+  renderizarTabela();
+}
 
 function formatarData(dataStr) {
   if (!dataStr) return "—";
@@ -315,11 +738,15 @@ function formatarData(dataStr) {
   return partes[2] + "/" + partes[1] + "/" + partes[0];
 }
 
-// INICIALIZAÇÃO
-
 document.addEventListener("DOMContentLoaded", function() {
+  inicializarStorage();
+  renderizarMenu();
   montarCarrossel();
   montarCards();
   configurarEventos();
   montarDetalhes();
+  montarFavoritos();
+  configurarCadastro();
+  configurarLogin();
+  configurarCrud();
 });

@@ -15,23 +15,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
-export function Header({
-  maybeSignedIn = false,
-  siteTitle,
-}: {
-  maybeSignedIn?: boolean;
-  siteTitle: Localized;
-}) {
+// O acesso da artista mora no rodape: quem visita a galeria nao tem conta,
+// entao um "Entrar" em destaque no topo so confunde.
+export function Header({ siteTitle }: { siteTitle: Localized }) {
   const pathname = usePathname();
   const router = useRouter();
   const { dict, locale } = useI18n();
   const name = localizedText(siteTitle, locale);
   const [query, setQuery] = useState("");
-
-  // Se o cookie sumiu ou expirou, /painel devolve para /login — o botão só
-  // encurta o caminho de quem já está dentro.
-  const accountHref = maybeSignedIn ? "/painel" : "/login";
-  const accountLabel = maybeSignedIn ? dict.panel.title : dict.header.signIn;
 
   function handleSearch(event: React.FormEvent) {
     event.preventDefault();
@@ -78,17 +69,10 @@ export function Header({
             variant="ghost"
             size="icon"
             className="rounded-full"
-            nativeButton={false} render={<Link href="/favoritos" aria-label={dict.header.favorites} />}
+            nativeButton={false}
+            render={<Link href="/favoritos" aria-label={dict.header.favorites} />}
           >
             <Heart className="h-5 w-5" />
-          </Button>
-
-          <Button
-            className="hidden rounded-full sm:inline-flex"
-            nativeButton={false}
-            render={<Link href={accountHref} />}
-          >
-            {accountLabel}
           </Button>
 
           <Sheet>
@@ -109,12 +93,6 @@ export function Header({
                     {dict.nav[link.key]}
                   </Link>
                 ))}
-                <Link
-                  href={accountHref}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-white/5 hover:text-foreground"
-                >
-                  {accountLabel}
-                </Link>
               </nav>
             </SheetContent>
           </Sheet>

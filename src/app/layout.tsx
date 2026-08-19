@@ -42,7 +42,7 @@ export default async function RootLayout({
   // Ler o cookie no servidor evita o flash de português antes da hidratação.
   const locale = resolveLocale(cookieStore.get(LOCALE_COOKIE)?.value);
 
-  // Só decide o rótulo do botão do header. Cookie presente NÃO prova sessão
+  // Só decide o rótulo do link no rodapé. Cookie presente NÃO prova sessão
   // válida — a proteção real é o getUser() no layout do /painel. Checar aqui
   // por cookie em vez de validar evita uma ida ao servidor de auth em toda
   // página pública.
@@ -61,11 +61,11 @@ export default async function RootLayout({
         <I18nProvider initialLocale={locale}>
           <SmoothScrollProvider>
             <CustomCursor />
-            <Header maybeSignedIn={maybeSignedIn} siteTitle={settings.siteTitle} />
+            <Header siteTitle={settings.siteTitle} />
             <main className="flex-1 pt-16">
               <PageTransition>{children}</PageTransition>
             </main>
-            <Footer siteTitle={settings.siteTitle} />
+            <Footer siteTitle={settings.siteTitle} maybeSignedIn={maybeSignedIn} />
           </SmoothScrollProvider>
         </I18nProvider>
       </body>

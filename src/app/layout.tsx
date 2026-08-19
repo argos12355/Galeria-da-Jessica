@@ -7,7 +7,7 @@ import { CustomCursor } from "@/components/layout/CustomCursor";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { PageTransition } from "@/components/layout/PageTransition";
-import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
+import { MotionProvider } from "@/components/layout/MotionProvider";
 import { HTML_LANG, LOCALE_COOKIE, resolveLocale } from "@/i18n/config";
 import { I18nProvider } from "@/i18n/I18nProvider";
 import { getSiteSettings, themeStyle } from "@/server/settings";
@@ -59,14 +59,14 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <I18nProvider initialLocale={locale}>
-          <SmoothScrollProvider>
+          <MotionProvider>
             <CustomCursor />
             <Header siteTitle={settings.siteTitle} />
             <main className="flex-1 pt-16">
               <PageTransition>{children}</PageTransition>
             </main>
             <Footer siteTitle={settings.siteTitle} maybeSignedIn={maybeSignedIn} />
-          </SmoothScrollProvider>
+          </MotionProvider>
         </I18nProvider>
       </body>
     </html>

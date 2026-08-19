@@ -4,7 +4,7 @@ import { ArrowRight, Palette, Sparkles, Wand2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { GsapTextReveal } from "@/components/layout/GsapTextReveal";
+import { TextReveal } from "@/components/layout/TextReveal";
 import { ScrollReveal } from "@/components/layout/ScrollReveal";
 import { artist } from "@/data/artist";
 import { ArtCard } from "@/features/gallery/ArtCard";
@@ -33,17 +33,17 @@ export default async function HomePage() {
           <Badge className="mb-6 border-white/15 bg-white/5 text-muted-foreground" variant="outline">
             <Sparkles className="mr-1 h-3.5 w-3.5 text-[var(--neon-cyan)]" /> {tagline}
           </Badge>
-          <GsapTextReveal
+          <TextReveal
             as="h1"
             className="max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
           >
             A galeria digital de{" "}
             <span className="text-gradient-aurora">{artist.nome}</span>
-          </GsapTextReveal>
-          <GsapTextReveal as="p" className="mt-6 max-w-xl text-lg text-muted-foreground">
+          </TextReveal>
+          <TextReveal as="p" className="mt-6 max-w-xl text-lg text-muted-foreground">
             {artist.estilo} — ilustrações de personagens com traços expressivos, cores vibrantes
             e uma identidade visual inspirada no universo anime.
-          </GsapTextReveal>
+          </TextReveal>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Button size="lg" className="glow-violet rounded-full text-base" nativeButton={false} render={<Link href="/galeria" />}>
               Explorar galeria <ArrowRight className="ml-1 h-4 w-4" />

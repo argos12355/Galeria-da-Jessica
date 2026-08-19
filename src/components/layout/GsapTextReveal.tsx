@@ -16,6 +16,10 @@ export function GsapTextReveal({
 
   useEffect(() => {
     if (!ref.current) return;
+    // gsap.from() só aplica o estado inicial quando roda; pular deixa o texto
+    // no estado natural, visível.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const ctx = gsap.context(() => {
       gsap.from(ref.current, {
         opacity: 0,

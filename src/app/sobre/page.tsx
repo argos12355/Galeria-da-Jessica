@@ -4,7 +4,10 @@ import { Globe, Link2, Share2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { ScrollReveal } from "@/components/layout/ScrollReveal";
-import { artist } from "@/services/mockArtService";
+import { artist } from "@/data/artist";
+import { DEFAULT_LOCALE } from "@/i18n/config";
+import { localizedText } from "@/i18n/localized";
+import { getSiteSettings } from "@/server/settings";
 
 export const metadata: Metadata = {
   title: "Sobre",
@@ -13,7 +16,11 @@ export const metadata: Metadata = {
 
 const socialIcons = [Globe, Share2, Link2];
 
-export default function SobrePage() {
+export default async function SobrePage() {
+  const settings = await getSiteSettings();
+  // Bio vinda do painel; se estiver vazia, o texto do perfil segue valendo.
+  const bio = localizedText(settings.aboutText, DEFAULT_LOCALE) || artist.bio;
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
       <ScrollReveal>
@@ -48,7 +55,7 @@ export default function SobrePage() {
         <ScrollReveal delay={0.1}>
           <h2 className="text-2xl font-semibold">{artist.nome}</h2>
           <p className="text-muted-foreground">{artist.estilo}</p>
-          <p className="mt-4 text-muted-foreground">{artist.bio}</p>
+          <p className="mt-4 text-muted-foreground">{bio}</p>
 
           <div className="mt-6 flex flex-wrap gap-2">
             {artist.ferramentas.map((tool) => (

@@ -6,22 +6,32 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GsapTextReveal } from "@/components/layout/GsapTextReveal";
 import { ScrollReveal } from "@/components/layout/ScrollReveal";
-import { HeroCanvasClient } from "@/components/three/HeroCanvasClient";
+import { artist } from "@/data/artist";
 import { ArtCard } from "@/features/gallery/ArtCard";
-import { artist, getFeaturedArtworks, getMainArtwork } from "@/services/mockArtService";
+import { DEFAULT_LOCALE } from "@/i18n/config";
+import { localizedText } from "@/i18n/localized";
+import { getArtworks, getFeaturedArtworks, getMainArtwork } from "@/server/artworks";
+import { getSiteSettings } from "@/server/settings";
 
-export default function HomePage() {
-  const featured = getFeaturedArtworks();
-  const main = getMainArtwork();
+export default async function HomePage() {
+  const [artworks, settings] = await Promise.all([getArtworks(), getSiteSettings()]);
+  const tagline = localizedText(settings.tagline, DEFAULT_LOCALE);
+  // Bio vinda do painel; se estiver vazia, o texto do perfil segue valendo.
+  const bio = localizedText(settings.aboutText, DEFAULT_LOCALE) || artist.bio;
+  const featured = getFeaturedArtworks(artworks);
+  const main = getMainArtwork(artworks);
+  // Esta página ainda não é traduzida: os textos fixos estão em português,
+  // então o conteúdo do banco acompanha o mesmo idioma.
+  const mainTitle = main ? localizedText(main.title, DEFAULT_LOCALE) : "";
 
   return (
     <div>
       {/* HERO */}
       <section className="aurora-bg noise-overlay relative flex min-h-[92vh] items-center overflow-hidden">
-        <HeroCanvasClient />
+        <div className="hero-dots" aria-hidden="true" />
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Badge className="mb-6 border-white/15 bg-white/5 text-muted-foreground" variant="outline">
-            <Sparkles className="mr-1 h-3.5 w-3.5 text-[var(--neon-cyan)]" /> Ilustração digital autoral
+            <Sparkles className="mr-1 h-3.5 w-3.5 text-[var(--neon-cyan)]" /> {tagline}
           </Badge>
           <GsapTextReveal
             as="h1"
@@ -35,14 +45,14 @@ export default function HomePage() {
             e uma identidade visual inspirada no universo anime.
           </GsapTextReveal>
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Button size="lg" className="glow-violet rounded-full text-base" render={<Link href="/galeria" />}>
+            <Button size="lg" className="glow-violet rounded-full text-base" nativeButton={false} render={<Link href="/galeria" />}>
               Explorar galeria <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
             <Button
               size="lg"
               variant="outline"
               className="rounded-full border-white/15 bg-white/5 text-base"
-              render={<Link href="/sobre" />}
+              nativeButton={false} render={<Link href="/sobre" />}
             >
               Conhecer a artista
             </Button>
@@ -61,23 +71,27 @@ export default function HomePage() {
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <ScrollReveal>
               <div className="glow-violet relative aspect-square overflow-hidden rounded-3xl">
-                <Image src={main.imagem} alt={main.titulo} fill className="object-cover" priority />
+                <Image src={main.imageUrl} alt={mainTitle} fill className="object-cover" priority />
               </div>
             </ScrollReveal>
             <ScrollReveal delay={0.1}>
-              <h2 className="text-4xl font-semibold tracking-tight">{main.titulo}</h2>
-              <p className="mt-4 text-muted-foreground">{main.conteudo}</p>
+              <h2 className="text-4xl font-semibold tracking-tight">{mainTitle}</h2>
+              <p className="mt-4 text-muted-foreground">
+                {localizedText(main.content, DEFAULT_LOCALE)}
+              </p>
               <dl className="mt-8 grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <dt className="text-muted-foreground">Técnica</dt>
-                  <dd className="font-medium">{main.tecnica}</dd>
+                  <dd className="font-medium">{localizedText(main.technique, DEFAULT_LOCALE)}</dd>
                 </div>
-                <div>
-                  <dt className="text-muted-foreground">Resolução</dt>
-                  <dd className="font-medium">{main.dimensoes}</dd>
-                </div>
+                {main.width && main.height && (
+                  <div>
+                    <dt className="text-muted-foreground">Resolução</dt>
+                    <dd className="font-medium">{`${main.width} x ${main.height} px`}</dd>
+                  </div>
+                )}
               </dl>
-              <Button className="mt-8 rounded-full" render={<Link href={`/galeria/${main.slug}`} />}>
+              <Button className="mt-8 rounded-full" nativeButton={false} render={<Link href={`/galeria/${main.slug}`} />}>
                 Ver detalhes completos <ArrowRight className="ml-1 h-4 w-4" />
               </Button>
             </ScrollReveal>
@@ -115,7 +129,7 @@ export default function HomePage() {
               <Palette className="h-4 w-4 text-[var(--neon-violet)]" /> Artista principal
             </div>
             <h2 className="text-3xl font-semibold tracking-tight">{artist.nome}</h2>
-            <p className="mt-4 max-w-2xl text-muted-foreground">{artist.bio}</p>
+            <p className="mt-4 max-w-2xl text-muted-foreground">{bio}</p>
             <div className="mt-6 flex flex-wrap gap-3">
               {artist.estatisticas.map((stat) => (
                 <div key={stat.label} className="glass rounded-xl px-4 py-2">
@@ -127,7 +141,7 @@ export default function HomePage() {
             <Button
               variant="outline"
               className="mt-8 rounded-full border-white/15 bg-white/5"
-              render={<Link href="/sobre" />}
+              nativeButton={false} render={<Link href="/sobre" />}
             >
               <Wand2 className="mr-1 h-4 w-4" /> Ver perfil completo
             </Button>

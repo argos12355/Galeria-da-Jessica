@@ -14,7 +14,7 @@ export default function NotFound() {
       <p className="mt-6 max-w-md text-muted-foreground">
         A página que você procura pode ter sido movida, renomeada ou nunca existiu nesta galeria.
       </p>
-      <Button className="glow-violet mt-10 rounded-full" render={<Link href="/" />}>
+      <Button className="glow-violet mt-10 rounded-full" nativeButton={false} render={<Link href="/" />}>
         <Compass className="mr-2 h-4 w-4" /> Voltar para a home
       </Button>
     </div>

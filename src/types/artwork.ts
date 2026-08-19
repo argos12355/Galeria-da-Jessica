@@ -1,28 +1,43 @@
-export type Category = "Ilustração" | "Personagem" | "Arte Digital" | "Arte Digital Especial";
+import type { Dictionary } from "@/i18n/config";
+import type { Localized } from "@/i18n/localized";
 
-export interface ProcessImage {
-  id: number;
-  titulo: string;
-  imagem: string;
+/** Chaves estáveis; o rótulo vem de dict.categories. */
+export const CATEGORIES = [
+  "illustration",
+  "character",
+  "digitalArt",
+  "specialDigitalArt",
+] as const;
+
+export type Category = (typeof CATEGORIES)[number];
+
+export function isCategory(value: string): value is Category {
+  return (CATEGORIES as readonly string[]).includes(value);
+}
+
+export function categoryLabel(category: Category, dict: Dictionary): string {
+  return dict.categories[category as keyof Dictionary["categories"]];
 }
 
 export interface Artwork {
-  id: number;
+  id: string;
   slug: string;
-  titulo: string;
-  descricao: string;
-  conteudo: string;
-  categoria: Category;
+  title: Localized;
+  description: Localized;
+  content: Localized;
+  technique: Localized;
+  category: Category;
   tags: string[];
-  autor: string;
-  data: string;
-  tecnica: string;
-  dimensoes: string;
-  destaque: boolean;
-  principal: boolean;
-  imagem: string;
-  curtidas: number;
-  processo: ProcessImage[];
+  /** Já resolvida: caminho local (/imagem/...) ou URL pública do Storage. */
+  imageUrl: string;
+  width: number | null;
+  height: number | null;
+  isNsfw: boolean;
+  isFeatured: boolean;
+  isMain: boolean;
+  isPublished: boolean;
+  sortOrder: number;
+  createdAt: string;
 }
 
 export interface TimelineEntry {

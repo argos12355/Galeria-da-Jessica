@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 
 import { ScrollReveal } from "@/components/layout/ScrollReveal";
 import { GalleryExplorer } from "@/features/gallery/GalleryExplorer";
-import { getAllArtworks } from "@/services/mockArtService";
+import { getArtworks } from "@/server/artworks";
+import { getSiteSettings } from "@/server/settings";
 
 export const metadata: Metadata = {
   title: "Galeria",
@@ -15,7 +16,7 @@ export default async function GaleriaPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
-  const artworks = getAllArtworks();
+  const [artworks, settings] = await Promise.all([getArtworks(), getSiteSettings()]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -29,7 +30,11 @@ export default async function GaleriaPage({
       </ScrollReveal>
 
       <div className="mt-12">
-        <GalleryExplorer artworks={artworks} initialQuery={q ?? ""} />
+        <GalleryExplorer
+          artworks={artworks}
+          initialQuery={q ?? ""}
+          layout={settings.layoutVariant}
+        />
       </div>
     </div>
   );

@@ -175,6 +175,27 @@
     animation: aurora-drift 18s ease-in-out infinite alternate;
   }
 
+  /*
+    Substitui o canvas 3D do hero: pontos estáticos em CSS puro, sem WebGL,
+    sem JavaScript e sem movimento. Elemento próprio porque a section já usa
+    ::before (aurora) e ::after (ruído).
+  */
+  .hero-dots {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+    background-image: radial-gradient(
+      circle,
+      color-mix(in oklch, var(--neon-cyan) 55%, transparent) 1.5px,
+      transparent 1.5px
+    );
+    background-size: 44px 44px;
+    mask-image: radial-gradient(65% 55% at 50% 45%, #000, transparent);
+    -webkit-mask-image: radial-gradient(65% 55% at 50% 45%, #000, transparent);
+  }
+
   .noise-overlay::after {
     content: "";
     position: absolute;

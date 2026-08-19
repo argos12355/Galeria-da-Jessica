@@ -3,15 +3,16 @@
 import Link from "next/link";
 import { HeartCrack } from "lucide-react";
 
+import { ArtCard } from "@/features/gallery/ArtCard";
+import { useI18n } from "@/i18n/I18nProvider";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArtCard } from "@/features/gallery/ArtCard";
 import { useFavorites } from "@/hooks/useFavorites";
-import { getAllArtworks } from "@/services/mockArtService";
+import type { Artwork } from "@/types/artwork";
 
-export function FavoritesList() {
+export function FavoritesList({ artworks }: { artworks: Artwork[] }) {
+  const { dict } = useI18n();
   const { favorites, hydrated } = useFavorites();
-  const artworks = getAllArtworks().filter((art) => favorites.includes(art.id));
 
   if (!hydrated) {
     return (
@@ -23,13 +24,15 @@ export function FavoritesList() {
     );
   }
 
-  if (artworks.length === 0) {
+  const favorited = artworks.filter((art) => favorites.includes(art.id));
+
+  if (favorited.length === 0) {
     return (
       <div className="glass flex flex-col items-center gap-4 rounded-3xl px-6 py-20 text-center">
         <HeartCrack className="h-10 w-10 text-muted-foreground" />
-        <p className="text-muted-foreground">Você ainda não possui itens favoritos.</p>
-        <Button className="rounded-full" render={<Link href="/galeria" />}>
-          Explorar galeria
+        <p className="text-muted-foreground">{dict.favorites.empty}</p>
+        <Button className="rounded-full" nativeButton={false} render={<Link href="/galeria" />}>
+          {dict.favorites.explore}
         </Button>
       </div>
     );
@@ -37,7 +40,7 @@ export function FavoritesList() {
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {artworks.map((art) => (
+      {favorited.map((art) => (
         <ArtCard key={art.id} art={art} />
       ))}
     </div>

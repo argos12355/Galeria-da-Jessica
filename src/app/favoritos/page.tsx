@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 
 import { ScrollReveal } from "@/components/layout/ScrollReveal";
 import { FavoritesList } from "@/features/favorites/FavoritesList";
+import { getArtworks } from "@/server/artworks";
 
 export const metadata: Metadata = {
   title: "Favoritos",
   description: "Suas obras favoritas na Galeria da Jessica.",
 };
 
-export default function FavoritosPage() {
+export default async function FavoritosPage() {
+  const artworks = await getArtworks();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
       <ScrollReveal>
@@ -21,7 +24,7 @@ export default function FavoritosPage() {
       </ScrollReveal>
 
       <div className="mt-12">
-        <FavoritesList />
+        <FavoritesList artworks={artworks} />
       </div>
     </div>
   );

@@ -48,6 +48,7 @@ interface TierRow {
   slots_cost: number;
   allows_nsfw: boolean;
   sample_image_path: string | null;
+  is_active: boolean;
   sort_order: number;
 }
 
@@ -76,11 +77,16 @@ export async function getCommissionSettings(): Promise<CommissionSettings> {
   };
 }
 
+/**
+ * Todos os pacotes, inclusive os ocultos. So o painel deve usar isto — na
+ * pagina publica a artista logada enxergaria pacotes que o visitante nao ve.
+ */
 export async function getCommissionTiers(): Promise<CommissionTier[]> {
   if (!isSupabaseConfigured()) return [];
 
   const supabase = await createSupabaseServerClient();
-  // A policy de RLS já filtra is_active — não precisa repetir no where.
+  // A policy de RLS filtra is_active para o publico; logada, a artista
+  // recebe tambem os pacotes ocultos.
   const { data, error } = await supabase
     .from("commission_tiers")
     .select("*")
@@ -103,7 +109,7 @@ export async function getCommissionTiers(): Promise<CommissionTier[]> {
     sampleImageUrl: row.sample_image_path
       ? supabase.storage.from("artworks").getPublicUrl(row.sample_image_path).data.publicUrl
       : null,
-    isActive: true,
+    isActive: row.is_active,
     sortOrder: row.sort_order,
   }));
 }
@@ -124,4 +130,10 @@ export async function getSlotState(): Promise<SlotState> {
     usedSlots: data.used_slots,
     mode: data.mode,
   });
+}
+
+/** Somente os pacotes visiveis. E o que a pagina publica consome. */
+export async function getPublicCommissionTiers(): Promise<CommissionTier[]> {
+  const tiers = await getCommissionTiers();
+  return tiers.filter((tier) => tier.isActive);
 }

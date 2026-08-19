@@ -19,24 +19,39 @@ export function CommissionsView({
   const { dict } = useI18n();
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-      <ScrollReveal>
-        <SlotBadge slots={slots} />
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
-          <span className="text-gradient-aurora">{dict.commissions.title}</span>
-        </h1>
-        <p className="mt-3 max-w-xl text-muted-foreground">{dict.commissions.subtitle}</p>
+    <div>
+      {/* Cabeçalho centralizado: a decisão do visitante é uma só, então tudo
+          converge para o botão. */}
+      <section className="aurora-bg noise-overlay relative overflow-hidden px-4 py-20 sm:px-6 sm:py-24">
+        <div className="relative z-10 mx-auto flex max-w-2xl flex-col items-center text-center">
+          <ScrollReveal>
+            <SlotBadge slots={slots} />
+          </ScrollReveal>
 
-        <div className="mt-8">
-          <CommissionCTA slots={slots} settings={settings} />
+          <ScrollReveal delay={0.05}>
+            <h1 className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">
+              <span className="text-gradient-aurora">{dict.commissions.title}</span>
+            </h1>
+            <p className="mt-4 text-lg text-muted-foreground">{dict.commissions.subtitle}</p>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.1}>
+            <div className="mt-8 flex flex-col items-center">
+              <CommissionCTA slots={slots} settings={settings} />
+            </div>
+          </ScrollReveal>
         </div>
-      </ScrollReveal>
+      </section>
 
-      <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {tiers.map((tier) => (
-          <TierCard key={tier.id} tier={tier} />
-        ))}
-      </div>
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {tiers.map((tier, index) => (
+            <ScrollReveal key={tier.id} delay={index * 0.08} className="h-full">
+              <TierCard tier={tier} />
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

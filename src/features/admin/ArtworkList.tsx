@@ -73,8 +73,9 @@ function ArtworkRow({ art }: { art: Artwork }) {
             <Badge className="border-none bg-black/70 text-white">{dict.nsfw.badge}</Badge>
           )}
           {!art.isPublished && (
-            <Badge className="border-none bg-white/20 text-white">
+            <Badge className="gap-1 border-none bg-amber-500/80 text-white">
               <EyeOff className="h-3 w-3" />
+              {dict.panel.artworks.draft}
             </Badge>
           )}
         </div>
@@ -98,7 +99,7 @@ function ArtworkRow({ art }: { art: Artwork }) {
               className="w-full gap-1.5"
             >
               {art.isPublished ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-              {dict.panel.artworks.isPublished}
+              {art.isPublished ? dict.panel.artworks.unpublish : dict.panel.artworks.publish}
             </Button>
           </form>
 

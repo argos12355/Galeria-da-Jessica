@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Check } from "lucide-react";
+import { Check, Clock } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { format } from "@/i18n/format";
@@ -13,63 +13,63 @@ import type { CommissionTier } from "@/types/commission";
 export function TierCard({ tier }: { tier: CommissionTier }) {
   const { dict, locale } = useI18n();
   const includes = localizedList(tier.includes, locale);
+  const name = localizedText(tier.name, locale);
 
   return (
-    <article className="glass flex flex-col overflow-hidden rounded-2xl">
+    <article className="glass group flex h-full flex-col overflow-hidden rounded-3xl ring-1 ring-white/5 transition-all duration-300 hover:-translate-y-1 hover:ring-[var(--neon-violet)]/40">
       {tier.sampleImageUrl && (
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
             src={tier.sampleImageUrl}
-            alt={localizedText(tier.name, locale)}
+            alt={name}
             fill
-            sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 90vw"
-            className="object-cover"
+            sizes="(min-width: 1024px) 380px, (min-width: 768px) 45vw, 90vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
           {tier.allowsNsfw && (
-            <Badge className="absolute right-3 top-3 border-none bg-black/60 text-white">
+            <Badge className="absolute right-3 top-3 border-none bg-black/70 text-white">
               {dict.nsfw.badge}
             </Badge>
           )}
         </div>
       )}
 
-      <div className="flex flex-1 flex-col gap-4 p-5">
+      <div className="flex flex-1 flex-col gap-5 p-6">
         <div>
-          <h3 className="text-lg font-medium">{localizedText(tier.name, locale)}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h2 className="text-xl font-semibold tracking-tight">{name}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             {localizedText(tier.description, locale)}
           </p>
         </div>
 
-        <div>
-          <span className="text-xs text-muted-foreground">{dict.commissions.priceFrom}</span>
-          <p className="text-gradient-aurora text-2xl font-semibold">
+        {/* O preço é a informação que o visitante veio buscar. */}
+        <div className="flex items-baseline gap-2 border-y border-white/10 py-4">
+          <span className="text-xs uppercase tracking-wide text-muted-foreground">
+            {dict.commissions.priceFrom}
+          </span>
+          <span className="text-gradient-aurora text-3xl font-semibold">
             {formatPrice(tier.priceCents, tier.currency, locale)}
-          </p>
+          </span>
         </div>
 
         {includes.length > 0 && (
-          <div>
-            <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              {dict.commissions.includes}
-            </h4>
-            <ul className="mt-2 space-y-1.5 text-sm">
-              {includes.map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--neon-cyan)]" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ul className="space-y-2.5 text-sm">
+            {includes.map((item) => (
+              <li key={item} className="flex items-start gap-2.5">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--neon-cyan)]" aria-hidden />
+                <span className="text-muted-foreground">{item}</span>
+              </li>
+            ))}
+          </ul>
         )}
 
-        <div className="mt-auto flex flex-wrap gap-2 pt-2 text-xs text-muted-foreground">
+        <div className="mt-auto flex flex-wrap items-center gap-2 pt-2 text-xs">
           {tier.deliveryDays && (
-            <Badge variant="outline" className="border-white/15 text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+              <Clock className="h-3.5 w-3.5" aria-hidden />
               {format(dict.commissions.deliveryDays, { days: tier.deliveryDays })}
-            </Badge>
+            </span>
           )}
           {tier.slotsCost > 1 && (
             <Badge variant="outline" className="border-amber-400/30 text-amber-300">

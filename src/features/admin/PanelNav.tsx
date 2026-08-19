@@ -17,6 +17,7 @@ export function PanelNav({ email }: { email: string }) {
   const links = [
     { href: "/painel", label: dict.panel.nav.overview },
     { href: "/painel/comissoes", label: dict.panel.nav.commissions },
+    { href: "/painel/precos", label: dict.panel.tiers.title },
     { href: "/painel/obras", label: dict.panel.artworks.title },
     { href: "/painel/aparencia", label: dict.panel.appearance.title },
   ];

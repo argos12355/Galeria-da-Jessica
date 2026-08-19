@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { CommissionsView } from "@/features/commissions/CommissionsView";
-import { getCommissionSettings, getCommissionTiers, getSlotState } from "@/server/commissions";
+import { getCommissionSettings, getPublicCommissionTiers, getSlotState } from "@/server/commissions";
 
 export const metadata: Metadata = {
   title: "Comissões",
@@ -13,7 +13,7 @@ export default async function ComissoesPage() {
   const [slots, settings, tiers] = await Promise.all([
     getSlotState(),
     getCommissionSettings(),
-    getCommissionTiers(),
+    getPublicCommissionTiers(),
   ]);
 
   return <CommissionsView slots={slots} settings={settings} tiers={tiers} />;
